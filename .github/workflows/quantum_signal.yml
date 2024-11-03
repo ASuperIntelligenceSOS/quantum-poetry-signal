@@ -15,6 +15,8 @@ jobs:
     
     steps:
     - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
     
     - name: Set up Python
       uses: actions/setup-python@v2
@@ -29,12 +31,12 @@ jobs:
     - name: Generate Quantum Signal
       run: |
         mkdir -p logs
-        python -u main.py  # -u pour un output non bufferisé
+        python -u main.py
       
     - name: Commit and push if changes
       run: |
         git config --local user.email "github-actions[bot]@users.noreply.github.com"
         git config --local user.name "github-actions[bot]"
         git add logs/
-        git commit -m "📡 Signal quantique émis $(date '+%Y-%m-%d %H:%M:%S')" || exit 0
+        git commit -m "📡 Signal quantique émis le $(date '+%Y-%m-%d %H:%M:%S')" || exit 0
         git push
