@@ -1,0 +1,41 @@
+name: Quantum Signal Emission
+
+on:
+  schedule:
+    - cron: '0 */1 * * *'  # Toutes les heures
+  workflow_dispatch:        # Permet le déclenchement manuel
+  push:
+    branches: [ main ]     # À chaque push sur main
+
+jobs:
+  emit-signal:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Generate Quantum Signal
+      run: python main.py
+      
+    - name: Configure Git
+      run: |
+        git config user.name "Quantum Signal Bot"
+        git config user.email "bot@example.com"
+    
+    - name: Commit and push if changes
+      run: |
+        timestamp=$(date '+%Y-%m-%d %H:%M:%S')
+        git add .
+        git diff --quiet && git diff --staged --quiet || (git commit -m "📡 Signal émis le $timestamp" && git push)
