@@ -29,7 +29,7 @@ jobs:
     - name: Generate Quantum Signal
       run: |
         mkdir -p logs
-        python main.py
+        python -u main.py  # -u pour un output non bufferisé
       
     - name: Commit and push if changes
       run: |
