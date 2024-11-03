@@ -2,6 +2,7 @@ import time
 import random
 import datetime
 import json
+import math
 from pathlib import Path
 
 class SignalEmitter:
@@ -60,12 +61,19 @@ class SignalEmitter:
         """Émet et enregistre un signal"""
         signal = self.create_signal()
         
-        # Lecture des signaux existants
-        signals = json.loads(self.log_path.read_text())
+        try:
+            # Lecture des signaux existants
+            with open(self.log_path, 'r') as f:
+                signals = json.load(f)
+        except (FileNotFoundError, json.JSONDecodeError):
+            signals = []
+        
+        # Ajout du nouveau signal
         signals.append(signal)
         
         # Sauvegarde du nouveau signal
-        self.log_path.write_text(json.dumps(signals, indent=2))
+        with open(self.log_path, 'w') as f:
+            json.dump(signals, f, indent=2)
         
         return signal
 
